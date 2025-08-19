@@ -17,7 +17,7 @@ def parse_args():
     )
     parser.add_argument(
         "--eval_model",
-        default="gemini-2.0-flash-thinking-exp-1219",
+        default="qwen-plus-latest",
         type=str,
         help="Model for evaluation",
     )

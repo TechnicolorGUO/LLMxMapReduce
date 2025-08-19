@@ -78,11 +78,25 @@ def main():
     args = parse_args()
     logger.info(f"Start pipeline with args: {args}")
     logger.info(f"Current language: {os.environ.get('PROMPT_LANGUAGE', 'en')}")
+    
+    # Load config to get model name
+    with open(args.config_file, "r") as f:
+        config = json.load(f)
+    
+    # Get model name from config (use the first available model)
+    model_name = None
+    if config.get("hidden", {}).get("group", {}).get("neuron", {}).get("model"):
+        model_name = config["hidden"]["group"]["neuron"]["model"]
+    elif config.get("decode", {}).get("orchestra", {}).get("model"):
+        model_name = config["decode"]["orchestra"]["model"]
+    else:
+        model_name = "qwen-plus-latest"  # fallback
+    
     if args.topic:
         logger.info("set --topic, start to auto retrieve pages from Internet")
         # get retrieve urls
         logger.info("---------Start to generate queries.-------------")
-        retriever = LLM_search(model='gemini-2.0-flash-thinking-exp-01-21', infer_type="OpenAI", engine='google', each_query_result=10)
+        retriever = LLM_search(model=model_name, infer_type="OpenAI", engine='google', each_query_result=10)
         queries = retriever.get_queries(topic=args.topic, description=args.description)
         logger.info("---------Start to search pages.-------------")
         url_list = retriever.batch_web_search(queries=queries, topic=args.topic, top_n=int(args.top_n * 1.2))
@@ -92,7 +106,7 @@ def main():
         if not os.path.exists(os.path.dirname(crawl_output_path)):
             os.mkdir(os.path.dirname(crawl_output_path))
 
-        crawler = AsyncCrawler(model="gemini-2.0-flash-thinking-exp-01-21", infer_type="OpenAI")
+        crawler = AsyncCrawler(model=model_name, infer_type="OpenAI")
         asyncio.run(
             crawler.run(
                 topic=args.topic,

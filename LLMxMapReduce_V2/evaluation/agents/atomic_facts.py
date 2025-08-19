@@ -28,7 +28,7 @@ def clean_claims(claims):
 class AtomicFactGenerator(object):
     def __init__(self, demon_dir):
         self.is_bio = True
-        self.model = "gemini-2.0-flash-thinking-exp-1219"
+        self.model = "qwen-plus-latest"
         self.infer_type = "OpenAI"
         self.api_model = APIModel(self.model, self.infer_type)
         self.group_size =300

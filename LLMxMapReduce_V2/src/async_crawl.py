@@ -27,7 +27,7 @@ class AsyncCrawler:
     DEFAULT_MIN_LENGTH = 350
     DEFAULT_MAX_LENGTH = 20000
 
-    def __init__(self, model="gemini-2.0-flash-thinking-exp-1219", infer_type="OpenAI"):
+    def __init__(self, model="qwen-plus-latest", infer_type="OpenAI"):
         """
         Initialize the AsyncCrawler.
 
